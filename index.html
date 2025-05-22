@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>World Clock Project</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    .clock {
+      margin-bottom: 20px;
+      background: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    select {
+      margin-bottom: 10px;
+      padding: 6px;
+      font-size: 16px;
+    }
+    a {
+      display: inline-block;
+      margin-top: 5px;
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>World Clock</h1>
+
+  <!-- User's Local Time -->
+  <div class="clock" id="localTime">
+    <strong>Your Local Time:</strong> <span id="user-time"></span>
+  </div>
+
+  <!-- City Time Display -->
+  <select id="citySelect">
+    <option value="America/New_York" data-link="https://en.wikipedia.org/wiki/New_York_City">New York</option>
+    <option value="Europe/London" data-link="https://en.wikipedia.org/wiki/London">London</option>
+    <option value="Asia/Tokyo" data-link="https://en.wikipedia.org/wiki/Tokyo">Tokyo</option>
+  </select>
+
+  <div class="clock" id="selectedCity">
+    <strong>Selected City Time:</strong> <span id="selected-time"></span>
+    <div><a id="city-link" href="#" target="_blank">Learn more about this city</a></div>
+  </div>
+
+  <!-- Static Clocks -->
+  <div class="clock">
+    <strong>New York:</strong> <span id="ny-time"></span>
+  </div>
+  <div class="clock">
+    <strong>London:</strong> <span id="london-time"></span>
+  </div>
+  <div class="clock">
+    <strong>Tokyo:</strong> <span id="tokyo-time"></span>
+  </div>
+
+  <script>
+    const updateClocks = () => {
+      const options = {
+        timeStyle: 'short',
+        dateStyle: 'medium'
+      };
+
+      const userTime = new Date().toLocaleString([], options);
+      document.getElementById("user-time").textContent = userTime;
+
+      const nyTime = new Date().toLocaleString("en-US", { ...options, timeZone: "America/New_York" });
+      document.getElementById("ny-time").textContent = nyTime;
+
+      const londonTime = new Date().toLocaleString("en-GB", { ...options, timeZone: "Europe/London" });
+      document.getElementById("london-time").textContent = londonTime;
+
+      const tokyoTime = new Date().toLocaleString("ja-JP", { ...options, timeZone: "Asia/Tokyo" });
+      document.getElementById("tokyo-time").textContent = tokyoTime;
+
+      updateSelectedCity();
+    };
+
+    const updateSelectedCity = () => {
+      const select = document.getElementById("citySelect");
+      const timeZone = select.value;
+      const cityName = select.options[select.selectedIndex].text;
+      const cityLink = select.options[select.selectedIndex].getAttribute("data-link");
+
+      const time = new Date().toLocaleString([], {
+        timeZone: timeZone,
+        timeStyle: 'short',
+        dateStyle: 'medium'
+      });
+
+      document.getElementById("selected-time").textContent = `${cityName}: ${time}`;
+      document.getElementById("city-link").href = cityLink;
+      document.getElementById("city-link").textContent = `Learn more about ${cityName}`;
+    };
+
+    document.getElementById("citySelect").addEventListener("change", updateSelectedCity);
+
+    updateClocks();
+    setInterval(updateClocks, 1000); // updates every second
+  </script>
+
+</body>
+</html>
